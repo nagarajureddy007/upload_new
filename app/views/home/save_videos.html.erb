@@ -1,0 +1,273 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-3 col-md-2 sidebar">
+      <div class="left-overflow-menu">              
+        <ul class="nav nav-sidebar" >
+          <h2 class="logo">
+            <img alt="Logo" src="/assets/logo.png"></h2>
+              <li><a href="#">Pages</a></li>
+              <li><a href="#">Design</a></li>
+              <li><a href="#">Commerce</a></li>
+              <li><a href="#">Matrics</a></li>
+              <li class=""><a href="#">Settings</a></li>
+              <li><a href="#">Help</a></li>
+          </ul>
+      </div>
+    </div>
+    <div class="col-sm-offset-2 main">
+      <span class="glyphicon pull-left glyphicon glyphicon-align-justify burger-  menu show-hide-icon">     </span>
+                    
+       
+      <div class="col-md-12 gallery">
+         <%=link_to 'back',home_index_path,class: 'btn btn-success',style: "float:left" %>
+            <br><br>
+            <h2><%=@folder.name %></h2>
+            <div class="image-box-container pull-left">
+              <%if current_user.admin?%>
+                <% if(@videos.size==0) %>
+                <div class="col-md-12 col-sm-4 " >
+                  <% elsif (@videos.size==2) %>
+                  <div class="col-md-4 col-sm-4 " >
+                  <% else %>
+                  <div class="col-md-4 col-sm-4" >
+                <% end %>
+
+                <div class="caption text-center">
+                  <a href="#" data-toggle="modal" data-target="#myModal">Add Video</a>
+                </div>
+                  <a href="#" data-toggle="modal" data-target="#myModal" class="thumbnail">
+                  <%=image_tag("addalbum.png") %>       
+                  </a><!--/Thumbnail class End-->
+                  </div><!--/Column End--> 
+              <%end%>
+  
+              <% if @videos.present? %>
+                 <% @videos.each do |video| %>
+                  <%if current_user.admin?%>
+                    <% if(@videos.size==1) %>
+                    <div class="col-md-8 col-sm-4 " >
+                    <% elsif (@videos.size==2) %>
+                    <div class="col-md-4 col-sm-4" >
+                    <% else %>
+                    <div class="col-md-4 col-sm-4 test3" >
+                    <% end %>
+                    <% else %>
+                    <% if(@videos.size==1) %>
+                    <div class="col-md-12 col-sm-4 " >
+                    <% elsif (@videos.size==2) %>
+                    <div class="col-md-8 col-sm-4" >
+                    <% else %>
+                    <div class="col-md-4 col-sm-4 test3" >
+                    <% end %>
+              <% end %>
+              <div class="caption text-center">
+                <%=video.title %>
+                </div><!--/Caption End-->
+                  <%  if video.url.include? "youtube" %>
+                    <% regex = /(youtu\.be\/|youtube\.com\/(watch\?(.*&)?v=|(embed|v|)\/))([^\?&"'>]+)/ %>
+                      <% v_id = video.url.match(regex)[5] %>
+                      <% #v_id = video.url.split("=").last %>
+                      <%=link_to image_tag("https://img.youtube.com/vi/#{v_id}/mqdefault.jpg", :border => 0),"https://www.youtube.com/embed/#{v_id}",:class => 'thumbnail example6' %>
+                    <% end %>
+                    <%  if video.url.include? "youtu.be" %>
+                      <% v_id = video.url.split("/").last %>
+                      <% #v_id = video.url.split("=").last %>
+                      <%=link_to image_tag("https://img.youtube.com/vi/#{v_id}/mqdefault.jpg", :border => 0),"https://www.youtube.com/embed/#{v_id}",:class => 'thumbnail example6' %>
+                    <% end %>
+                      <%  if video.url.include? "vimeo" %>
+                      <% v_id = video.url.split("/").last %>
+                      <% video_v = VideoInfo.new("http://vimeo.com/#{v_id}") %>
+                      <%=link_to image_tag(video_v.thumbnail_large, :border => 0),video_v.embed_url ,:class => 'thumbnail example6' %>
+                      <% end %>
+                    </div><!--/Column End-->
+                  <%end%>
+                <%end%>  
+            </div>
+          <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">         
+         
+          <button aria-hidden="true" class="btn-close" data-dismiss="modal" type="button">Close</button>
+           <h4 class="modal-title" id="myModalLabel">Embed or upload Videos</h4>
+
+                </div>
+                <div class="modal-body">
+                  <ul class="list-inline text-center add-popup-link">
+                  <li>
+                    <a href="#" data-toggle="modal" data-target="#imageModal">
+                    <div class="icon-box">
+                      <%=image_tag('video-32-dark.png') %>
+                      <div>Embed Video</div>
+                    </div>                               
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" data-toggle="modal" data-target="#imageModal1">
+                    <div class="icon-box">
+                      <%=image_tag('video-32-dark.png') %>
+                      <div> Upload Video</div>
+                    </div>
+                    </a>
+                  </li>
+                  </ul>
+                  </div>            
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title modal-header-block" id="myModalLabel">Embed Video</h4>    
+              <ul class="list-inline modal-header-block pull-right large-modal-menu">
+                <button aria-hidden="true" class="btn-close"  data-dismiss="modal" type="button">Close</button> 
+              </ul>
+            </div>
+            <div class="modal-body">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-lg-4">
+                    <p>Custom Thumbnail for video</p>                        
+                    <div class="modal-left-thumbnail">
+                      <%=image_tag('img2.jpg', class: "img-responsive") %>
+                    </div>
+                    <div>
+                      <a href="#" class="modal-left-search-btn"> <i class="glyphicon glyphicon-search"> </i> </a>
+                    </div>
+                  </div><!--Modal Left Body End Here-->
+                    <%= form_for :video,:url => {controller: 'home',id: @folder.id, :action=>'folder_videos_save'}, method: :post do |f| %>   
+                
+                  <div class="col-lg-8"><!--Modal Right Column Start Here-->
+                    <div class="modal-right">
+                      <div class="form-group has-feedback">
+                        <%=f.text_field :url, class: "form-control",placeholder: "Enter your embededable url here" %>
+                        <span class="glyphicon glyphicon-link form-control-feedback" aria-hidden="true">
+                        </span>
+                        <%=hidden_field_tag 'folder_id',:value=> @folder.id %>
+                        <p>&nbsp; &nbsp; &nbsp; &nbsp; Paste the url of video ( Vimeo, YouTube, Animoto) text...
+                        </p>
+                      </div>
+                      <div class="form-group has-feedback">
+                        <%=f.text_field :title, class: "form-control",placeholder: "Enter a video title" %>             
+                      </div>
+                      <div class="form-group">
+                        <%=text_field_tag 'email','',class: "form-control",placeholder: "Enter user email to assign video" %>      
+                      </div>
+                      <div class="form-group">
+                        <%= f.text_area :content, :class => 'ckeditor' %>         
+                      </div>
+                      <div class="form-group">
+                        <%=f.submit 'save',class: "btn btn-success" %>
+                      </div>
+                    </div>   
+                </div>
+                <%end%> <!--Modal Right Body End Here-->
+              </div><!--/Row-->
+            </div><!--/Container Fluid End Here-->
+          </div><!--/Modal Body End-->
+        </div>
+      </div>
+    </div>
+
+  <div class="modal fade" id="imageModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title modal-header-block" id="myModalLabel">Uploaded Video</h4>
+    
+          <ul class="list-inline modal-header-block pull-right large-modal-menu">
+                <button aria-hidden="true" class="btn-close" data-dismiss="modal"  type="button">Close</button>
+          </ul>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-lg-4">
+                <p>Custom Thumbnail for video</p>                        
+                <div class="modal-left-thumbnail">
+                  <%=image_tag('img2.jpg', class: "img-responsive") %>
+                </div>
+                <div></div>
+                <div>
+                  <a href="#" class="modal-left-search-btn"> <i class="glyphicon glyphicon-search"> </i> </a>
+                </div>
+                <div></div>
+                </div><!--Modal Left Body End Here--> 
+                  <%= form_for :video,:url => {controller: 'home',id: @folder.id, :action=>'upload_video'}, html: {:id => 'video_pre_upload'}, method: :post do |f| %>   
+                  <!-- video clicking -->  
+                  <div class="col-lg-8"><!--Modal Right Column Start Here-->
+                    <div class="modal-right">
+                      <div class="form-group has-feedback">
+                      <%=f.hidden_field 'folder_id',:value=> @folder.id %>
+                      <span class="glyphicon glyphicon-link form-control-feedback" aria-hidden="true"></span>
+                    </div>
+                    <div class="form-group">
+                      <%=text_field_tag 'title','',class: "form-control",placeholder: "Enter a video title" %>
+                    </div>                            
+                    <div class="form-group">
+                      <%= text_area_tag 'content','',:class => 'ckeditor' %>
+                    </div>
+                    <div class="form-group">
+                     <%#=f.submit 'upload',class: "btn btn-success save_video_url", :onclick => "form_submit()" %>
+                    </div>
+                    </div>
+                  <%end%>
+
+                  <%= form_tag '', id: 'video_upload', multipart: true do %>  
+                  <!-- video clicking -->  
+                  <%= hidden_field_tag :token, '' %>
+                  <div class="col-lg-8"><!--Modal Right Column Start Here-->
+                    <div class="modal-right">
+                      <div class="form-group has-feedback">
+                        <%=file_field_tag 'file', required: true %>
+                      <span class="glyphicon glyphicon-link form-control-feedback" aria-hidden="true"></span>
+                    </div>
+                    <div class="form-group">
+                     <% end %>
+                    <button id="submit_pre_upload_form" class="btn btn-success">Upload</button>
+                    <%#= image_tag 'ajax-loader.gif', class: 'preloader', alt: 'Uploading...', title: 'Uploading...' %>
+                  </div><!--Modal Right Body End Here-->
+                </div><!--/Row-->
+              </div><!--/Container Fluid End Here-->
+            </div><!--/Modal Body End-->
+            </div>
+          </div>
+          </div>
+        </div><!--Right Top-->
+        </div>
+        <footer class="affix">
+        <p class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">Copyright © 2015 Bunk1 | All rights reserved. </p>
+        </footer>
+      </div>
+    <script>
+      function form_submit() {
+      document.forms[0].action = "/home/upload_video";          
+      document.forms[0].submit();
+      }
+    </script>
+
+<script>
+  $(document).ready(function() {
+    var submit_button = $('#submit_pre_upload_form');
+    var video_upload = $('#video_upload');
+    submit_button.click(function () {
+      $.ajax({
+        type: 'POST',
+        url: '<%= upload_video_home_index_path %>',
+        data: $('#video_pre_upload').serialize(),
+        dataType: 'json',
+        success: function(response) {
+          video_upload.find('#token').val(response.token);
+          video_upload.attr('action', response.url.replace(/^http:/i, window.location.protocol)).submit();
+          submit_button.unbind('click');//.hide();
+          $('.preloader').css('display', 'block');
+        }
+      });
+    });
+  });
+</script>
+
+

@@ -1,0 +1,230 @@
+<div class="container-fluid">
+	<div class="row">
+    <div class="col-sm-3 col-md-2 sidebar">
+			<div class="left-overflow-menu">            	
+        <ul class="nav nav-sidebar">
+          <h2 class="logo">
+          <%=image_tag("logo.png") %></h2>
+            <li><a href="#">Pages</a></li>
+            <li><a href="#">Design</a></li>
+            <li><a href="#">Commerce</a></li>
+            <li><a href="#">Matrics</a></li>
+            <li class=""><a href="#">Settings</a></li>
+            <li><a href="#">Help</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="col-sm-offset-2 main">
+      <span class="glyphicon pull-left glyphicon glyphicon-align-justify burger-menu show-hide-icon">
+      </span>
+      <div class="col-md-12">
+        <div class="col-md-5">
+          <h1 class="right-main-heading">Gallery</h1>
+        </div>
+             
+        <div class="col-md-12 gallery">
+          <div class="image-box-container pull-left">
+      			<%if !current_user.nil? && current_user.admin?%>
+              <% if(@folder.size==0) %>
+              <div class="col-md-12 col-sm-4 " >
+              <% elsif (@folder.size<=2) %>
+              <div class="col-md-4 col-sm-4 " >
+              <% else %>
+              <div class="col-md-4 col-sm-4" >
+              <% end %>
+              <!--/Caption End-->
+                <a data-toggle="modal" data-target="#albumModal" class="thumbnail thumbnail2">
+                <%=image_tag("addalbum.png") %>       
+                </a><!--/Thumbnail class End-->
+                <div class="caption text-center">
+                  <a href='http://www.google.com' onclick='alert()'>Add Folder</a>
+                </div>
+                </div><!--/Column End-->	
+                <%end%>                            
+                <% if @folder.present? %>
+                <% @folder.each do |folder|%>
+                <% if(@folder.size<=1) %>
+                <div class="col-md-4 col-sm-4 " >
+                <% elsif (@folder.size<=2) %>
+                <div class="col-md-4 col-sm-4" >
+                <% else %>
+                <div class="col-md-4 col-sm-4 " >
+                <% end %>           
+                <%=link_to image_tag("folder.png"),{controller: 'home',action: 'save_videos',id: folder.id},class: "thumbnail thumbnail2" %>
+                </a>
+                    <div class="caption text-center"><%=folder.name%></div><!--/Caption -->
+                  </div>
+                <% end %>
+              <%end%>
+            </div>
+          </div>
+          <div class="col-md-12 gallery_image">
+            <% if @video.present? %>
+            <% @video.each do |video| %>
+          <div class="image-box-container pull-left addvideotab">
+                            
+          <div class="col-md-4 col-sm-4">
+            <% v_id = video.url.split("=").last %>
+
+            <%=link_to image_tag("https://img.youtube.com/vi/#{v_id}/mqdefault.jpg", :border => 0), {:action => 'user_video', :controller => 'home',id: video.id}, :class => 'thumbnail',"data-toggle"=>"modal","data-target"=>"#userModal" %>
+            <div class="caption text-center">
+              <%=video.title %>
+              <%= render  "user_video", {:video => video}%>
+            </div><!--/Caption End-->
+          </div><!--/Column End-->  
+        </div>
+        <%end%>
+        <%end%>
+      </div>
+			</div>
+      </div>
+        <footer class="affix">
+        <p class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">Copyright © 2015 Bunk1 | All rights reserved. </p>
+        </footer>
+      </div>
+      <!--Modal For Image-click -->	                    
+      <!-- Modal -->
+      <div class="modal fade" id="albumModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="modal-dialog modal-lg">
+    	<div class="modal-content">
+      	<div class="modal-header">
+          <h4 class="modal-title modal-header-block" id="myModalLabel">Create Album</h4>
+          <ul class="list-inline modal-header-block pull-right large-modal-menu">
+                    <button aria-hidden="true" class="btn-close" data-dismiss="modal" type="button">Close</button>
+
+          </ul>
+      	</div>
+          <div class="modal-body">
+                	<div class="container-fluid">
+                    	<div class="row">
+                        <div class="col-lg-8"><!--Modal Right Column Start Here-->
+                        
+                          <%= form_tag({:controller => "home", :action => "create", :method=>"post"}, {class: "form-group has-feedback",id: "folder_create"}) do %> 
+                           <div class="modal-left">
+                              <h2>Create new album</h2>                             
+                           </div>
+                             <div class="form-group">
+                             <p class="error-msg"></p>
+                              <%=text_field_tag 'name','',class: "form-control url_message",placeholder: "Enter album title" %>
+                              <%= submit_tag "Create Album",class: 'btn btn-success', id:'submit_button' %> 
+                              
+                             </div>
+                          <%end%>
+                        </div>
+                      
+                        </div><!--Modal Right Body End Here-->
+                        </div><!--/Row-->
+    			</div><!--/Container Fluid End Here-->
+          </div><!--/Modal Body End-->
+                      
+                        
+        
+		</div>
+  </div>
+</div>                 
+<script> 
+$(document).ready(function(){
+  $(".burger-menu").click(function(){
+    $(".sidebar").toggleClass("hide-show");
+    $(".main").toggleClass("col-sm-offset-2");
+  });
+  $('.addvideotab').hide()
+});
+</script>
+
+<!--====Pretty Photo Gallery Jquery====-->
+<script src="js/jquery.prettyPhoto.js"></script>
+<script type="text/javascript" charset="utf-8">
+	$(document).ready(function(){
+$("#submit_button").click(function(event)
+  {
+    if($('#name').val()==''){
+       $('.error-msg').text('Enter a name')
+      return false
+     }else{
+      $('#folder_create').submit();
+     }
+    event.preventDefault(); // cancel default behavio
+    //... rest of add logic
+  });
+$('.btn-close').click(function(){
+  $('.error-msg').text('');
+})
+
+		$("area[rel^='prettyPhoto']").prettyPhoto();
+		$(".gallery:first a[rel^='prettyPhoto']").prettyPhoto({animation_speed:'normal',theme:'light_square',slideshow:8000, autoplay_slideshow: false});
+		$(".gallery:gt(0) a[rel^='prettyPhoto']").prettyPhoto({animation_speed:'fast',slideshow:10000, hideflash: true});
+	});
+
+  $('.save_url').click(function(){
+    var message = $('.url_message').val()
+    $.ajax({
+      type: "GET",
+      url: 'home/save_url_data', //sumbits it to the given url of the form
+      data: {title: message},
+      dataType: "JSON" // you want a difference between normal and ajax-calls, and json is standard
+    }).success(function(msg){
+    console.log(msg)
+    $('.success_msg').html("successfully created")
+    })
+  })
+$('.videotab').click(function(){
+  $('.gallery').hide()
+  $('.addvideotab').show()
+  })
+  $('.gallerytab').click(function(){
+  $('.gallery').show()
+  $('.addvideotab').hide()
+})
+
+$('.save_video_url').click(function(){
+  var url = $('#url').val()
+  var title = $('#title').val()
+  var content = $('#content').val()
+  $.ajax({
+    type: "GET",
+    url: 'home/save_videos', //sumbits it to the given url of the form
+    data: {url: url,title: title, con: content},
+    dataType: "JSON" // you want a difference between normal and ajax-calls, and json is standard
+    }).success(function(msg){
+    console.log(msg)
+    $('.success_msg').html("successfully created")
+    })
+    })
+  </script>
+
+</body>
+</html>
+                
+
+             
+                         
+                      
+ 
+                
+            
+   
+          
+
+           
+          
+
+
+
+              
+           
+                
+    
+
+
+
+
+
+
+
+
+     
+
+
+

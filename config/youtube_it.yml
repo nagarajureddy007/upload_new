@@ -1,0 +1,10 @@
+common: &common
+  dev_key: AI39si7bRzd0_-kOf2Ju8eI9R0qYYCeECTf1lYyh0V0e5T6CbBVn3ky7JonqiYDIKqBcsNeSQfIOPHaWlLXKY5q58YfJtcSkMg
+  username:  amarchetu@gmail.com
+  password:  Chetu@123
+test:
+  <<: *common
+development:
+  <<: *common
+production:
+  <<: *common

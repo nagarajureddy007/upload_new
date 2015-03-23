@@ -1,0 +1,12 @@
+.sidebar{
+left:0px;
+transition: all 1s ease 0s;
+-webkit-transition: all 1s ease 0s;
+-moz-transition: all 1s ease 0s;}
+
+.sidebar.hide-show{
+left:-300px;
+transition: all 1s ease 0s;
+-webkit-transition: all 1s ease 0s;
+-moz-transition: all 1s ease 0s;}
+.col-sm-offset-2.main{ margin-left: 16.6667%;}
